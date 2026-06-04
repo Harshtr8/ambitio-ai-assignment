@@ -103,17 +103,18 @@ class OperatorEdit(BaseModel):
     edited_at: datetime
 
 
+from pydantic import Field
+
 class LearnedPattern(BaseModel):
     pattern_id: str
     pattern_type: PatternType
-
     description: str
-
     original_phrasing: str
     preferred_phrasing: str
-
     frequency: int = 1
-    last_seen: datetime
+    last_seen: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
 
 
 # =============================================================================

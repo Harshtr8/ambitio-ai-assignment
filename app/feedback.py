@@ -130,9 +130,37 @@ def process_feedback(
     )
 
     return [
-        LearnedPattern(**p)
-        for p in extracted_patterns
-    ]
+    LearnedPattern(
+        pattern_id=p.get(
+            "pattern_id",
+            generate_pattern_id(),
+        ),
+        pattern_type=p.get(
+            "pattern_type",
+            PatternType.TERMINOLOGY.value,
+        ),
+        description=p.get(
+            "description",
+            "",
+        ),
+        original_phrasing=p.get(
+            "original_phrasing",
+            "",
+        ),
+        preferred_phrasing=p.get(
+            "preferred_phrasing",
+            "",
+        ),
+        frequency=p.get(
+            "frequency",
+            1,
+        ),
+        last_seen=datetime.now(
+            timezone.utc
+        ),
+    )
+    for p in extracted_patterns
+]
 
 
 # =============================================================================

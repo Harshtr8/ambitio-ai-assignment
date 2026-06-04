@@ -1,0 +1,11 @@
+[
+  {
+    "pattern_id": "pat_6a27fc2c",
+    "pattern_type": "terminology",
+    "description": "Use 'Registered Owner' instead of 'Owner'",
+    "original_phrasing": "Owner",
+    "preferred_phrasing": "Registered Owner",
+    "frequency": 2,
+    "last_seen": "2026-06-04T14:09:39.183708+00:00"
+  }
+]
