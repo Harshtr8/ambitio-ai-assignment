@@ -152,7 +152,7 @@ uvicorn app.main:app --reload
 ```
 
 Swagger UI:
-
+![HomePage](<Screenshot (527).png>)
 ```text
 http://127.0.0.1:8000/docs
 ```
@@ -168,19 +168,19 @@ GET /health
 ```
 
 ### Process Document
-
+![Process Doc](<Screenshot (528).png>)
 ```http
 POST /process
 ```
 
 ### Generate Draft
-
+![Draft Post](<Screenshot (529).png>)
 ```http
 POST /draft
 ```
 
 ### Submit Feedback
-
+![Feedback Post](<Screenshot (530).png>)
 ```http
 POST /feedback
 ```
