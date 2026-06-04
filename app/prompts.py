@@ -337,18 +337,20 @@ Checklist generated only from retrieved evidence.
 # PATTERN EXTRACTION
 # =============================================================================
 
-PATTERN_EXTRACTION_PROMPT = f"""
+PATTERN_EXTRACTION_PROMPT = """
 Analyze the operator edits below.
 
 Original Draft:
-{{original_draft}}
+{original_draft}
 
 Edited Draft:
-{{edited_draft}}
+{edited_draft}
 
 Extract reusable patterns.
 
-Schema:
+Return ONLY a JSON array.
+
+Schema Example:
 
 [
   {{
@@ -361,13 +363,22 @@ Schema:
   }}
 ]
 
+Valid pattern_type values:
+- terminology
+- formatting
+- section_addition
+- section_removal
+
 Rules:
 
 - Extract only reusable patterns.
 - Ignore document-specific factual corrections.
 - Ignore spelling fixes.
 - Ignore one-time edits.
-- If no reusable patterns exist, return []
+- If no reusable patterns exist, return [].
+- Return valid JSON only.
+- Do not wrap JSON in markdown.
+- Do not add explanations.
 
-{JSON_RESPONSE_INSTRUCTIONS}
+Return ONLY the JSON array.
 """
