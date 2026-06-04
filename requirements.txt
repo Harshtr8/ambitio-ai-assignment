@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+
+google-generativeai
+
+sentence-transformers
+faiss-cpu
+numpy
+
+pymupdf
+pytesseract
+pillow
+
+pydantic
+pydantic-settings
+
+python-dotenv
