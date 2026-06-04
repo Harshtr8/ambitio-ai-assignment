@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambitio Document Intelligence Pipeline</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f7fa;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        pre {
+            background: #111827;
+            color: #f9fafb;
+            padding: 15px;
+            overflow-x: auto;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>📄 Ambitio Document Intelligence Pipeline</h1>
+
+<!-- PROCESS DOCUMENT -->
+
+<div class="card">
+    <h2>1. Process Document</h2>
+
+    <label>PDF Filename (inside data/sample_docs)</label>
+
+    <input
+        type="text"
+        id="filename"
+        placeholder="sample.pdf"
+    >
+
+    <button onclick="processDocument()">
+        Process Document
+    </button>
+</div>
+
+<!-- GENERATE DRAFT -->
+
+<div class="card">
+    <h2>2. Generate Draft</h2>
+
+    <label>Document ID</label>
+
+    <input
+        type="text"
+        id="docId"
+        placeholder="doc_xxxxxxxx"
+    >
+
+    <label>Draft Type</label>
+
+    <select id="draftType">
+        <option value="case_fact_summary">
+            Case Fact Summary
+        </option>
+
+        <option value="title_review">
+            Title Review
+        </option>
+
+        <option value="internal_memo">
+            Internal Memo
+        </option>
+
+        <option value="document_checklist">
+            Document Checklist
+        </option>
+    </select>
+
+    <button onclick="generateDraft()">
+        Generate Draft
+    </button>
+</div>
+
+<!-- FEEDBACK -->
+
+<div class="card">
+    <h2>3. Submit Feedback</h2>
+
+    <label>Original Draft</label>
+
+    <textarea
+        id="originalDraft"
+        rows="6"
+    ></textarea>
+
+    <label>Edited Draft</label>
+
+    <textarea
+        id="editedDraft"
+        rows="6"
+    ></textarea>
+
+    <button onclick="submitFeedback()">
+        Submit Feedback
+    </button>
+</div>
+
+<!-- RESPONSE -->
+
+<div class="card">
+    <h2>API Response</h2>
+
+    <pre id="output">
+Waiting for action...
+    </pre>
+</div>
+
+<script>
+
+const API_BASE = "http://127.0.0.1:8000";
+
+function showOutput(data) {
+    document.getElementById("output").textContent =
+        JSON.stringify(data, null, 2);
+}
+
+async function processDocument() {
+
+    const filename =
+        document.getElementById("filename").value;
+
+    const response = await fetch(
+        `${API_BASE}/process`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                filename
+            })
+        }
+    );
+
+    const data = await response.json();
+
+    showOutput(data);
+
+    if (data.doc_id) {
+        document.getElementById("docId").value =
+            data.doc_id;
+    }
+}
+
+async function generateDraft() {
+
+    const doc_id =
+        document.getElementById("docId").value;
+
+    const draft_type =
+        document.getElementById("draftType").value;
+
+    const response = await fetch(
+        `${API_BASE}/draft`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                doc_id,
+                draft_type
+            })
+        }
+    );
+
+    const data = await response.json();
+
+    showOutput(data);
+
+    if (
+        data.draft &&
+        data.draft.content
+    ) {
+        document.getElementById(
+            "originalDraft"
+        ).value =
+            data.draft.content;
+    }
+}
+
+async function submitFeedback() {
+
+    const doc_id =
+        document.getElementById("docId").value;
+
+    const draft_type =
+        document.getElementById("draftType").value;
+
+    const original_draft =
+        document.getElementById(
+            "originalDraft"
+        ).value;
+
+    const edited_draft =
+        document.getElementById(
+            "editedDraft"
+        ).value;
+
+    const response = await fetch(
+        `${API_BASE}/feedback`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                doc_id,
+                draft_type,
+                original_draft,
+                edited_draft
+            })
+        }
+    );
+
+    const data = await response.json();
+
+    showOutput(data);
+}
+
+</script>
+
+</body>
+</html>
